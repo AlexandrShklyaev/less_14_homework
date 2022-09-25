@@ -7,10 +7,8 @@ def get_sort(list_lines: list, is_reverse: bool = False) -> list:
 
 
 def get_map(list_lines: list, column: int) -> list:
-    if column < len(list_lines):
-        return list(map(lambda x: x.split()[column], list_lines))
-    print("нет такого столбца")
-    return []
+    return list(map(lambda x: "".join(x.split()[column:column + 1]), list_lines))
+    # т.к. в строках разное количество столбцов, то используем срез [column:column + 1], а не индекс
 
 
 def get_unique(list_lines: list) -> list:
@@ -23,18 +21,15 @@ def get_limit(list_lines: list, limit: int) -> list:
 
 def get_maps(list_lines: list, columns: str) -> list:  # дополнительная команда
     """ выводит несколько столбцов через пробел (например, maps 0 4 7) """
-    is_true = list(map(lambda x: int(x) < len(list_lines[0].split()), columns.split()))
-    if is_true.count(False) == 0:  # проверим , что все столбцы существуют
-        return list(map(lambda x: " ".join(list(map(lambda y: x.split()[int(y)], columns.split()))), list_lines))
-    print("не все столбцы существуют")
-    return []
+    list_col = columns.split()
+    return list(map(lambda x: " ".join(map(lambda y: "".join(x.split()[int(y):(int(y) + 1)]), list_col)), list_lines))
 
 
 def run_comand(list_lines: list, command: str, atribute: str) -> list:
     """ для текущего списка строк выполняет команду по её имени и параметру """
     if atribute == "":
         print(f"вы не указали параметр для команды '{command}'")
-        print("примеры: filter abc | unique - | sort asc | sort desc| limit 5 | map 3 | maps 0 3 6")
+        print("примеры: filter abc | unique - | sort asc | sort desc| limit 5 | map 3 | maps 0 6 3 22 8")
         return []
     if command == "filter":
         return get_filter(list_lines, atribute)
